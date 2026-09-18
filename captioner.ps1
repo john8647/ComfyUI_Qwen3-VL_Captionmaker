@@ -16,7 +16,7 @@
     A phrase inserted at the start of every caption.
 
 .EXAMPLE
-    ./Invoke-ComfyCaption.ps1 -ImageFolder "G:\training\scripts\images" -TriggerWord "MyDataset"
+    ./Invoke-ComfyCaption.ps1 -ImageFolder "G:\training\scripts\images" -TriggerWord "RedHairedWoman_f1"
 
 # REQUIREMENT:
 # Place qwen3vl_4b_fp8_scaled.safetensors into:
