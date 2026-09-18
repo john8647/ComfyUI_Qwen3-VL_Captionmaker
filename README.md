@@ -175,7 +175,7 @@ ComfyUI probes video inputs even when not used.
 
 ## 📄 License
 
-MIT License recommended.
+Free to use without restrictions.
 
 ---
 
@@ -184,16 +184,7 @@ MIT License recommended.
 This script is built for **real dataset production**, not demos.  
 It’s stable, predictable, and handles Qwen3‑VL’s quirks gracefully.
 
-If you want, I can also generate:
 
-- `LICENSE`  
-- `.gitignore`  
-- `examples/` folder  
-- A parallel worker version  
-- A caption downloader  
-- A JSON dataset builder  
-
-Just tell me and I’ll build it.
 
 
 
