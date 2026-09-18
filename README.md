@@ -85,14 +85,30 @@ Run the script:
 
 ### Example caption output
 
-Trigger word:
-RedHairedWoman_f1
+When generating captions for character‑based LoRA training, the script prepends a trigger word to every caption. This trigger word acts as the identity token the model will later associate with a specific person or character.
+
+For example, if your trigger word is: 'RedHairedWoman_f1'
+
+```python
+RedHairedWoman_f1 is standing beside a bicycle on a quiet street...
+```
+Why this matters
+The purpose of using a trigger word is to teach the image generation model that all images containing this character share the same identity. By repeatedly seeing the same trigger word across many images of the same red‑haired woman, the LoRA learns:
+
+-her hair color
+
+-her facial structure
+
+-her proportions
+
+-her style
+
+-her overall appearance
+
+This ensures the LoRA produces consistent results and recognizes the character as a distinct visual identity.
 
 
-Caption begins with:
-
-
-MyDataset A woman standing beside a bicycle on a quiet street...
+Later, when generating images, you can reliably summon this character by prompting with: any variation of the character but include RedHairedWoman_f1.
 ---
 
 ## 📜 Script Overview
