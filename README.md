@@ -31,9 +31,10 @@ python main.py --listen --no-gui
 
 ### 2. Required Model
 
-Place the Qwen3‑VL text encoder model here:
+Place the Qwen3‑VL text encoder model here: ComfyUI/models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors. Use this download command to retrieve the file.
+
 ```python
-ComfyUI/models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors
+cd /root/ComfyUI/models/text_encoders && wget --header "Authorization: Bearer [HFKEY]" https://huggingface.co/Comfy-Org/Qwen3-VL/resolve/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors
 ```
 This model is required for the CLIPLoader node used in caption generation.
 
