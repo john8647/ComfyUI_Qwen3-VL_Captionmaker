@@ -16,7 +16,7 @@
     A phrase inserted at the start of every caption.
 
 .EXAMPLE
-    ./Invoke-ComfyCaption.ps1 -ImageFolder "G:\training\scripts\images" -TriggerWord "RedHairedWoman_f1"
+    ./Invoke-ComfyCaption.ps1 -ImageFolder "G:\training\scripts\images" -TriggerWord "MyDataset"
 
 # REQUIREMENT:
 # Place qwen3vl_4b_fp8_scaled.safetensors into:
@@ -24,8 +24,9 @@
 #>
 
 param(
-    [string]$ImageFolder = "G:\training\scripts\images",
-    [string]$TriggerWord = "RedHairedWoman_f1"
+    [string]$ImageFolder = "G:\new_set\Room_h1",
+    [string]$TriggerWord = "Room_LR_h1",
+    [bool]$IsCharacter = $false
 )
 
 # ComfyUI API root url and port if needed.
@@ -35,6 +36,20 @@ Write-Host "=== ComfyUI Captioner ==="
 Write-Host "Image folder: $ImageFolder"
 Write-Host "Trigger word: $TriggerWord"
 Write-Host ""
+
+# caption maker
+# caption for rooms
+$room_prompt = "Write one natural sentence describing the image using flowing descriptive prose, not bullet points, keyword lists, not starting with 'assistant' not comma‑separated tags. Begin the caption with the trigger phrase always begin with '$TriggerWord' followed immediately by a short description of the subject or style’s fixed defining characteristics such as permanent interior features, style color, object decor and background or environment, lighting and main objects. Every visible variable attribute must be clearly described so it is not mistakenly learned as a permanent trait. Use plain, readable natural language rather than technical or opaque tokens. Do not add information that is not visually present, and do not guess emotions or identity. A format example would be: 'Room_LR_h1, is a warmly lit living room, positioned near a sliding glass door framed by green curtains. The hardwood floor and surrounding furniture suggest a lived-in, comfortable home environment.'"
+# caption for characters
+$character_prompt = "Write one natural sentence describing the image using flowing descriptive prose, not bullet points, keyword lists, or comma‑separated tags. Begin the caption with the trigger phrase '$TriggerWord' followed immediately by a short description of the subject or style’s fixed defining characteristics such as permanent facial features, hair color or style, distinguishing marks, or consistent stylistic traits. After that, describe all variable elements visible in the image that should not be absorbed into the concept, including background or environment, clothing or outfit, lighting, pose or body position, and main objects. Every visible variable attribute must be clearly described so it is not mistakenly learned as a permanent trait. Use plain, readable natural language rather than technical or opaque tokens. Do not add information that is not visually present, and do not guess emotions or identity. A format example would be: 'RedHairedWoman_f1, a woman with who is wearing a plain white t-shirt and jeans standing by a sofa in the living room.'"
+
+if ($IsCharacter) {
+    $prompt_text = $character_prompt
+} else {
+    $prompt_text = $room_prompt
+}
+
+
 
 # Load all image files
 $Images = Get-ChildItem -Path "$ImageFolder\*" -File -Include *.png, *.jpg, *.jpeg, *.webp, *.bmp, *.gif
@@ -47,16 +62,12 @@ if ($Images.Count -eq 0) {
 foreach ($img in $Images) {
 
     Write-Host "Submitting job for $($img.Name)"
-
-    # Build caption prompt with trigger word
-    $CaptionPrompt = "Write one natural sentence describing the image using flowing descriptive prose, not bullet points, keyword lists, or comma‑separated tags. Begin the caption with the trigger phrase '$TriggerWord' followed immediately by a short description of the subject or style’s fixed defining characteristics such as permanent facial features, hair color or style, distinguishing marks, or consistent stylistic traits. After that, describe all variable elements visible in the image that should not be absorbed into the concept, including background or environment, clothing or outfit, lighting, pose or body position, and main objects. Every visible variable attribute must be clearly described so it is not mistakenly learned as a permanent trait. Use plain, readable natural language rather than technical or opaque tokens. Do not add information that is not visually present, and do not guess emotions or identity. A format example would be: 'RedHairedWoman_f1, a woman with who is wearing a plain white t-shirt and jeans standing by a sofa in the living room.'"
     
     # Build JSON payload for ComfyUI
     $Payload = @{
         "prompt" = @{
             "35" = @{
                 "inputs" = @{
-                    # IMPORTANT: ComfyUI must load images from its own filesystem
                     "image" = "/root/ComfyUI/input/$($img.Name)"
                 }
                 "class_type" = "LoadImage"
@@ -64,13 +75,12 @@ foreach ($img in $Images) {
             "28" = @{
                 "inputs" = @{
                     "text" = @("1", 0)
-                    "root" = "output"
+                    "path" = "output"
                     "filename_prefix" = ""
                     "filename_delimiter" = ""
                     "filename_number_padding" = 0
                     "file_extension" = ".txt"
                     "encoding" = "utf-8"
-                    # Save caption as Caption0.txt, Caption1.txt, etc.
                     "filename_suffix" = $img.BaseName
                 }
                 "class_type" = "Save Text File"
@@ -94,7 +104,7 @@ foreach ($img in $Images) {
             }
             "1" = @{
                 "inputs" = @{
-                    "prompt" = $CaptionPrompt
+                    "prompt" = $prompt_text
                     "max_length" = 120
                     "sampling_mode" = "on"
                     "sampling_mode.temperature" = 0.7
@@ -116,6 +126,8 @@ foreach ($img in $Images) {
     } | ConvertTo-Json -Depth 10
 
     # Submit job to ComfyUI
+    ##write-host $Payload ## for testing payload for errors.
+    
     $Response = Invoke-RestMethod -Uri "$ComfyURL/prompt" -Method Post -Body $Payload -ContentType "application/json"
 
     Write-Host "Job submitted. Waiting for completion..."
