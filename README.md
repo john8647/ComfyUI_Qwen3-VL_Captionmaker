@@ -38,7 +38,7 @@ cd /root/ComfyUI/models/text_encoders && wget --header "Authorization: Bearer [H
 ```
 This model is required for the CLIPLoader node used in caption generation.
 
-### 3. Required Custom Nodes
+### 3. Required Custom Node
 
 Install the following into:
 
@@ -46,12 +46,7 @@ Install the following into:
 ComfyUI/custom_nodes/
 ```
 
-#### A. ComfyUI-batching-nodes  
-Used for stable batch handling and queue‑safe execution.  
-Source:  
-https://github.com/Hahihula/ComfyUI-batching-nodes
-
-#### B. WAS Node Suite (Save Text File node)  
+#### WAS Node Suite (Save Text File node)  
 Provides the `Save Text File` node used to write captions.  
 Source:  
 https://github.com/WASasquatch/was-node-suite-comfyui
