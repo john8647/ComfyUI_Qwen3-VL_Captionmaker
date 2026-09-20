@@ -157,30 +157,7 @@ Caption0.png → Caption0.txt
 Caption1.png → Caption1.txt
 ```
 
-Perfect for dataset training.
-
----
-
-## 🐛 Troubleshooting
-
-### UI freezes during large batches  
-Expected.  
-Backend continues running normally.  
-Use headless mode for maximum stability.
-
-### “Image model required” or CLIPLoader errors  
-Ensure:
-
-```python
-ComfyUI/models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors
-```
-
-
-exists.
-
-### PyAV decode warnings  
-Harmless.  
-ComfyUI probes video inputs even when not used.
+Perfect for dataset training which you can take to AI Toolkit for LoRA training with text encoding.
 
 ---
 
