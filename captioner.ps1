@@ -105,7 +105,7 @@ foreach ($img in $Images) {
             "1" = @{
                 "inputs" = @{
                     "prompt" = $prompt_text
-                    "max_length" = 120
+                    "max_length" = 240
                     "sampling_mode" = "on"
                     "sampling_mode.temperature" = 0.7
                     "sampling_mode.top_k" = 64
